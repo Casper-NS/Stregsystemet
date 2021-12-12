@@ -9,14 +9,13 @@ namespace Stregsystemet
     public class User : IComparable<User>
     {
 
-        public User(int id, string username, string firstname, string lastname, string email, float initialBalance = 0)
+        public User(int id, string firstname, string lastname, string username, string email, float initialBalance = 0)
         {
             ID = id;
-
-            UserName = ValidateUserName(username) ? username : throw new ArgumentException("Invalid Username - valid characters: [0-9], [a-z] and '_'");
             FirstName = string.IsNullOrEmpty(firstname) ? throw new ArgumentNullException("String: First Name can't be null or empty") : firstname;
             LastName = string.IsNullOrEmpty(lastname) ? throw new ArgumentNullException("String: Last Name can't be null or empty") : lastname;
 
+            UserName = ValidateUserName(username) ? username : throw new ArgumentException("Invalid Username - valid characters: [0-9], [a-z] and '_'");
             Email = ValidateEmail(email) ? email : throw new ArgumentException("Invalid Email");
             Balance = initialBalance;
         }
@@ -39,7 +38,7 @@ namespace Stregsystemet
 
         public override string ToString()
         {
-            return "User: " + FirstName + " " + LastName + " " + $"({Email})";
+            return "User: " + FirstName + " " + LastName + " " + $"({Email})" + " | Balance: " + Balance.ToString();
         }
 
         private bool ValidateUserName(string username)

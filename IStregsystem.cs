@@ -10,6 +10,7 @@ namespace Stregsystemet
     public interface IStregsystem
     {
         IEnumerable<Product> ActiveProducts { get; }
+        
         InsertCashTransaction AddCreditsToAccount(User user, int amount);
         BuyTransaction BuyProduct(User user, Product product);
         Product GetProductByID(int id);

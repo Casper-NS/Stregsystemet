@@ -73,9 +73,9 @@ namespace Stregsystemet
         public void Start()
         {
             
-            foreach (var product in Stregsystem.ActiveProducts)
+            foreach (var item in Stregsystem.ActiveProducts)
             {
-                Console.WriteLine(product.ToString());
+                Console.WriteLine(item.ToString());
             }
         }
     }

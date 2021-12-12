@@ -12,7 +12,10 @@ namespace Stregsystemet
 
     public class Stregsystem : IStregsystem
     {
-        public IEnumerable<Product> ActiveProducts => GetProductsFromFile("products.csv");
+        public IEnumerable<Product> ActiveProducts => Products.Where(p => p.Active == true);
+
+        private IEnumerable<User> Users => GetUsersFromFile("users.csv");
+        private IEnumerable<Product> Products => GetProductsFromFile("products.csv");
 
         public event UserBalanceNotification UserBalanceWarning;
 
@@ -50,7 +53,7 @@ namespace Stregsystemet
         {
             List<Product> products = new List<Product>();
 
-            string[] tagsToRemove = { "<h1>", "<h2>", "<h3>", "<b>", "</h1>", "</h2>", "</h3>", "</b>" };
+            string[] tagsToRemove = { "<h1>", "<h2>", "<h3>", "<b>", "</h1>", "</h2>", "</h3>", "</b>", "\""};
 
             using (var reader = new StreamReader($"../../../Data/{fileName}"))
             {
@@ -65,14 +68,9 @@ namespace Stregsystemet
                     var price = int.Parse(values[2]);
                     var active = values[3] == "1" ? true : false;
 
-                    if (DateTime.TryParse(values[4], out DateTime result))
-                    {
-                        var deActivateDate = result;
-                    }
-
                     foreach (string tag in tagsToRemove)
                     {
-                        name.Replace(tag, "");
+                        name = name.Replace(tag, "");
                     }
 
                     products.Add(new Product(id, name, price, active));
@@ -83,5 +81,30 @@ namespace Stregsystemet
             return products;
         }
 
+        private List<User> GetUsersFromFile(string fileName)
+        {
+            List<User> users = new List<User>();
+
+            using (var reader = new StreamReader($"../../../Data/{fileName}"))
+            {
+                reader.ReadLine();
+                while (!reader.EndOfStream)
+                {
+                    var line = reader.ReadLine();
+                    var values = line.Split(',');
+
+                    var id = int.Parse(values[0]);
+                    var firstName = values[1];
+                    var lastName = values[2];
+                    var userName = values[3];
+                    var balance = float.Parse(values[4]);
+                    var email = values[5];
+
+                    users.Add(new User(id, firstName, lastName, userName, email, balance));
+
+                }
+            }
+            return users;
+        }
     }
 }

@@ -13,59 +13,70 @@ namespace Stregsystemet
     {
         public event StregsystemEvent commandentered;
 
-        public void close()
+        public IStregsystem Stregsystem { get; }
+
+        public StregsystemCLI(IStregsystem stregsystem)
+        {
+            Stregsystem = stregsystem;
+        }
+
+        public void DisplayUserNotFound(string username)
         {
             throw new NotImplementedException();
         }
 
-        public void displayadmincommandnotfoundmessage(string admincommand)
+        public void DisplayProductNotFound(string product)
         {
             throw new NotImplementedException();
         }
 
-        public void displaygeneralerror(string errorstring)
+        public void DisplayUserInfo(User user)
         {
             throw new NotImplementedException();
         }
 
-        public void displayinsufficientcash(User user, Product product)
+        public void DisplayTooManyArgumentsError(string command)
         {
             throw new NotImplementedException();
         }
 
-        public void displayproductnotfound(string product)
+        public void DisplayAdminCommandNotFoundMessage(string admincommand)
         {
             throw new NotImplementedException();
         }
 
-        public void displaytoomanyargumentserror(string command)
+        public void DisplayUserBuysProduct(BuyTransaction transaction)
         {
             throw new NotImplementedException();
         }
 
-        public void displayuserbuysproduct(BuyTransaction transaction)
+        public void DisplayUserBuysProduct(int count, BuyTransaction transaction)
         {
             throw new NotImplementedException();
         }
 
-        public void displayuserbuysproduct(int count, BuyTransaction transaction)
+        public void Close()
         {
             throw new NotImplementedException();
         }
 
-        public void displayuserinfo(User user)
+        public void DisplayInsufficientCash(User user, Product product)
         {
             throw new NotImplementedException();
         }
 
-        public void displayusernotfound(string username)
+        public void DisplayGeneralError(string errorstring)
         {
             throw new NotImplementedException();
         }
 
-        public void start()
+        public void Start()
         {
-            throw new NotImplementedException();
+            
+            foreach (var product in Stregsystem.ActiveProducts)
+            {
+                Console.WriteLine(product.ToString());
+            }
         }
     }
 }

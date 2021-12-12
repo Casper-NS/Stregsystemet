@@ -9,10 +9,10 @@ namespace Stregsystemet
     public class Product
     {
 
-        public Product(int id, string name, int price, bool active, bool creditStatus)
+        public Product(int id, string name, int price, bool active = true, bool creditStatus = false)
         {
             ID = id;
-            Name = name;
+            Name = string.IsNullOrEmpty(name) ? throw new ArgumentException("string: Name can't be null or empty") : name;
             Price = price;
 
             Active = active;
@@ -28,7 +28,7 @@ namespace Stregsystemet
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return ID.ToString() + " - " + Name + " - " + Price.ToString() + " kr."; 
         }
 
     }

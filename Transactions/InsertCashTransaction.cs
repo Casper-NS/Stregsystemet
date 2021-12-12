@@ -8,19 +8,26 @@ namespace Stregsystemet.Transactions
 {
     public class InsertCashTransaction : Transaction
     {
-        public InsertCashTransaction(int id, User user, DateTime date, float amount) 
-            : base(id, user, date, amount)
+        public InsertCashTransaction(int transactionId, User user, DateTime date, float amount) 
+            : base(transactionId, user, date, amount)
         {
         }
 
         public override string ToString()
         {
-            throw new NotImplementedException();
+            return "Insert cash transaction - Id: " + TransactionId.ToString() + " | User: " + User.UserName + " | Amount: " + Amount.ToString() + " | Date/Time: " + Date.ToString();
         }
 
-        public override void Execute()
+        public override void Execute(User user, float amount)
         {
-            throw new NotImplementedException();
+            if (amount > 0)
+            {
+                user.Balance += amount;
+            }
+            else
+            {
+                throw new ArgumentException("Amount to be inserted has to be greater than 0");
+            }
         }
     }
 }

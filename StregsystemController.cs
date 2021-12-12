@@ -8,5 +8,9 @@ namespace Stregsystemet
 {
     class StregsystemController
     {
+        public StregsystemController(IStregsystemUI cli, IStregsystem stregsystem)
+        {
+
+        }
     }
 }

@@ -9,17 +9,18 @@ namespace Stregsystemet
 {
     public interface IStregsystemUI
     {
-        void displayusernotfound(string username);
-        void displayproductnotfound(string product);
-        void displayuserinfo(User user);
-        void displaytoomanyargumentserror(string command);
-        void displayadmincommandnotfoundmessage(string admincommand);
-        void displayuserbuysproduct(BuyTransaction transaction);
-        void displayuserbuysproduct(int count, BuyTransaction transaction);
-        void close();
-        void displayinsufficientcash(User user, Product product);
-        void displaygeneralerror(string errorstring);
-        void start();
+        void DisplayUserNotFound(string username);
+        void DisplayProductNotFound(string product);
+        void DisplayUserInfo(User user);
+        void DisplayTooManyArgumentsError(string command);
+        void DisplayAdminCommandNotFoundMessage(string admincommand);
+        void DisplayUserBuysProduct(BuyTransaction transaction);
+        void DisplayUserBuysProduct(int count, BuyTransaction transaction);
+        void Close();
+        void DisplayInsufficientCash(User user, Product product);
+        void DisplayGeneralError(string errorstring);
+        void Start();
+
         event StregsystemEvent commandentered;
     }
 

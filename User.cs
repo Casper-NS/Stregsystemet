@@ -9,7 +9,7 @@ namespace Stregsystemet
     public class User : IComparable<User>
     {
 
-        public User(int id, string username, string firstname, string lastname, string email, int initialBalance = 0)
+        public User(int id, string username, string firstname, string lastname, string email, float initialBalance = 0)
         {
             ID = id;
 
@@ -30,7 +30,7 @@ namespace Stregsystemet
 
         public string Email { get; }
 
-        public int Balance { get; }
+        public float Balance { get; set; }
 
         public int CompareTo(User user)
         {
@@ -61,24 +61,18 @@ namespace Stregsystemet
         {
             string validCharacters = "abcdefghijklmnopqrstuvwxyz1234567890_.-";
 
-            string[] parts;
-            string localPart;
-            string domainPart;
+            string[] parts = email.ToLower().Split('@');
 
-            if (email.Count(c => c == '@') > 1)
-            {
-                parts = email.Split('@');
-                localPart = parts[0];
-                domainPart = parts[1];
-            }
-            else
+            if (parts.Length != 2)
             {
                 return false;
             }
 
+            string localPart = parts[0];
+            string domainPart = parts[1];
+
             foreach (char character in localPart)
             {
-
                 if (!validCharacters.Contains(character))
                 {
                     return false;
@@ -86,6 +80,11 @@ namespace Stregsystemet
             }
 
             validCharacters = validCharacters.Remove(validCharacters.IndexOf('_'), 1);
+
+            if ((domainPart[0] == '.' || domainPart[0] == '-') && (domainPart[domainPart.Length-1] == '.' || domainPart[domainPart.Length - 1] == '-'))
+            {
+                return false;
+            }
 
             foreach (char character in domainPart)
             {
@@ -97,5 +96,27 @@ namespace Stregsystemet
 
             return true;
         }
+
+        public override bool Equals(object obj)
+        {
+
+            if (obj == null || GetType() != obj.GetType())
+            {
+                return false;
+            }
+
+            // TODO: write your implementation of Equals() here
+            throw new NotImplementedException();
+            return base.Equals(obj);
+        }
+
+        // override object.GetHashCode
+        public override int GetHashCode()
+        {
+            // TODO: write your implementation of GetHashCode() here
+            throw new NotImplementedException();
+            return base.GetHashCode();
+        }
+
     }
 }

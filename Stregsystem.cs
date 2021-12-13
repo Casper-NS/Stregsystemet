@@ -1,4 +1,5 @@
-﻿using Stregsystemet.Transactions;
+﻿using Stregsystemet.Exceptions;
+using Stregsystemet.Transactions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,23 +19,34 @@ namespace Stregsystemet
         private IEnumerable<User> _users => GetUsersFromFile("users.csv");
         private IEnumerable<Product> _products => GetProductsFromFile("products.csv");
 
-        private IEnumerable<Transaction> _transactions;
+        private List<Transaction> _transactions;
 
         public event UserBalanceNotification UserBalanceWarning;
 
         public InsertCashTransaction AddCreditsToAccount(User user, int amount)
         {
-            return new InsertCashTransaction(_transactionIdCounter++, user, DateTime.Now, amount);
+            InsertCashTransaction transaction = new InsertCashTransaction(_transactionIdCounter++, user, DateTime.Now, amount);
+            _transactions.Add(transaction);
+            return transaction;
         }
 
         public BuyTransaction BuyProduct(User user, Product product)
         {
-            return new BuyTransaction(_transactionIdCounter++, user, DateTime.Now, product.Price);
+            BuyTransaction transaction = new BuyTransaction(_transactionIdCounter++, user, DateTime.Now, product.Price);
+            _transactions.Add(transaction);
+            return transaction;
         }
 
         public Product GetProductByID(int id)
         {
-            return (Product)_products.Where(p => p.ID == id);
+            if (_products.Where(p => p.ID == id).Any())
+            {
+                return _products.Where(p => p.ID == id).First();
+            }
+            else
+            {
+                throw new ProductNotFoundException(id);
+            }
         }
 
         public IEnumerable<Transaction> GetTransactions(User user, int count)
@@ -44,7 +56,14 @@ namespace Stregsystemet
 
         public User GetUserByUsername(string username)
         {
-            return (User)_users.Where(user => user.UserName == username);
+            if (_users.Where(user => user.UserName == username).Any())
+            {
+                return _users.Where(user => user.UserName == username).First();
+            }
+            else
+            {
+                throw new UserNotFoundException(username);
+            }
         }
 
         public IEnumerable<User> GetUsers(Func<User, bool> predicate)

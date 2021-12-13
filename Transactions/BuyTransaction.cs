@@ -28,7 +28,7 @@ namespace Stregsystemet.Transactions
 
         public override string ToString()
         {
-            return "Buy transaction: Id: " + TransactionId.ToString() + " | User: " + User.UserName + " | Amount: " + Amount.ToString() + " | Date/Time: " + Date.ToString();
+            return "Buy transaction - Id: " + TransactionId.ToString() + " | User: " + User.UserName + " | Amount: " + Amount.ToString() + " | Date/Time: " + Date.ToString();
         }
     }
 }

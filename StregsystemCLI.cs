@@ -22,57 +22,56 @@ namespace Stregsystemet
 
         public void DisplayUserNotFound(string username)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"User [{username}] not found!");
         }
 
         public void DisplayProductNotFound(string product)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Product [{product}] not found!");
         }
 
         public void DisplayUserInfo(User user)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(user);
         }
 
         public void DisplayTooManyArgumentsError(string command)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Too many arguments in command: [{command}]");
         }
 
         public void DisplayAdminCommandNotFoundMessage(string admincommand)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Admin command [{admincommand}] not found");
         }
 
         public void DisplayUserBuysProduct(BuyTransaction transaction)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(transaction);
         }
 
         public void DisplayUserBuysProduct(int count, BuyTransaction transaction)
         {
-            throw new NotImplementedException();
+            Console.WriteLine(count.ToString() + " * " + transaction);
         }
 
         public void Close()
         {
-            throw new NotImplementedException();
+            Environment.Exit(0);
         }
 
         public void DisplayInsufficientCash(User user, Product product)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"User: [{user}] has insufficient funds to purchace [{product}]");
         }
 
         public void DisplayGeneralError(string errorstring)
         {
-            throw new NotImplementedException();
+            Console.WriteLine($"Error: {errorstring}");
         }
 
         public void Start()
         {
-            
             foreach (var item in Stregsystem.ActiveProducts)
             {
                 Console.WriteLine(item.ToString());

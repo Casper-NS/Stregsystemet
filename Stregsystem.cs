@@ -12,41 +12,44 @@ namespace Stregsystemet
 
     public class Stregsystem : IStregsystem
     {
-        public IEnumerable<Product> ActiveProducts => Products.Where(p => p.Active == true);
+        public IEnumerable<Product> ActiveProducts => _products.Where(p => p.Active == true);
 
-        private IEnumerable<User> Users => GetUsersFromFile("users.csv");
-        private IEnumerable<Product> Products => GetProductsFromFile("products.csv");
+        private int _transactionIdCounter = 1;
+        private IEnumerable<User> _users => GetUsersFromFile("users.csv");
+        private IEnumerable<Product> _products => GetProductsFromFile("products.csv");
+
+        private IEnumerable<Transaction> _transactions;
 
         public event UserBalanceNotification UserBalanceWarning;
 
         public InsertCashTransaction AddCreditsToAccount(User user, int amount)
         {
-            throw new NotImplementedException();
+            return new InsertCashTransaction(_transactionIdCounter++, user, DateTime.Now, amount);
         }
 
         public BuyTransaction BuyProduct(User user, Product product)
         {
-            throw new NotImplementedException();
+            return new BuyTransaction(_transactionIdCounter++, user, DateTime.Now, product.Price);
         }
 
         public Product GetProductByID(int id)
         {
-            throw new NotImplementedException();
+            return (Product)_products.Where(p => p.ID == id);
         }
 
         public IEnumerable<Transaction> GetTransactions(User user, int count)
         {
-            throw new NotImplementedException();
+            return _transactions.Where(t => t.User == user).Take(count);
         }
 
         public User GetUserByUsername(string username)
         {
-            throw new NotImplementedException();
+            return (User)_users.Where(user => user.UserName == username);
         }
 
-        public User GetUsers(Func<User, bool> predicate)
+        public IEnumerable<User> GetUsers(Func<User, bool> predicate)
         {
-            throw new NotImplementedException();
+            return _users.Where(predicate);
         }
 
         private List<Product> GetProductsFromFile(string fileName)

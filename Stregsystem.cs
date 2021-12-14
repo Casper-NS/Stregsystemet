@@ -19,7 +19,7 @@ namespace Stregsystemet
         private IEnumerable<User> _users => GetUsersFromFile("users.csv");
         private IEnumerable<Product> _products => GetProductsFromFile("products.csv");
 
-        private List<Transaction> _transactions;
+        private List<Transaction> _transactions = new List<Transaction>();
 
         public event UserBalanceNotification UserBalanceWarning;
 

@@ -21,7 +21,7 @@ namespace Stregsystemet
         void DisplayGeneralError(string errorstring);
         void Start();
 
-        event StregsystemEvent commandentered;
+        event StregsystemCLI.StregsystemEvent CommandEntered;
     }
 
 }

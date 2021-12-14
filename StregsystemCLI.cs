@@ -7,11 +7,19 @@ using System.Threading.Tasks;
 
 namespace Stregsystemet
 {
-    public delegate void StregsystemEvent();
-
     public class StregsystemCLI : IStregsystemUI
     {
-        public event StregsystemEvent commandentered;
+        public delegate void StregsystemEvent(string command);
+
+        public event StregsystemEvent CommandEntered;
+
+        protected virtual void OnCommandEntered(string command)
+        {
+            if (CommandEntered != null)
+            {
+                CommandEntered(command);
+            }
+        }
 
         public IStregsystem Stregsystem { get; }
 
@@ -70,11 +78,24 @@ namespace Stregsystemet
             Console.WriteLine($"Error: {errorstring}");
         }
 
-        public void Start()
+        private void DisplayActiveProducts()
         {
+            Console.WriteLine("Input your username and a product ID (seperated by a space) to purchase a product.");
             foreach (var item in Stregsystem.ActiveProducts)
             {
                 Console.WriteLine(item.ToString());
+            }
+        }
+
+        public void Start()
+        { 
+            string command;
+
+            while (true)
+            {
+                DisplayActiveProducts();
+                command = Console.ReadLine();
+                OnCommandEntered(command);
             }
         }
     }

@@ -12,10 +12,22 @@ namespace Stregsystemet
         public IStregsystem Stregsystem { get; }
         public IStregsystemUI CLI { get; }
 
+        private StregsystemCommandParser CommandParser;
+
         public StregsystemController(IStregsystemUI cli, IStregsystem stregsystem)
         {
             Stregsystem = stregsystem;
             CLI = cli;
+            CommandParser = new StregsystemCommandParser(this);
+
+            CLI.CommandEntered += this.OnCommandEntered;
+
         }
+
+        public void OnCommandEntered(string command)
+        {
+            CommandParser.ParseCommand(command);
+        }
+
     }
 }

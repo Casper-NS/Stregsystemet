@@ -24,6 +24,23 @@ namespace Stregsystemet
 
         }
 
+        public void Buy(string username, string productId)
+        {
+            User user = Stregsystem.GetUserByUsername(username);
+            if (int.TryParse(productId, out int Id))
+            {
+                Product product = Stregsystem.GetProductByID(Id);
+                Stregsystem.BuyProduct(user, product);
+            }
+            else
+            {
+                //TODO: Make this a proper exception.
+                throw new Exception($"Could not parse {productId} to an int");
+            }
+            
+            
+        }
+
         public void OnCommandEntered(string command)
         {
             CommandParser.ParseCommand(command);

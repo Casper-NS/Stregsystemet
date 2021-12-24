@@ -81,19 +81,26 @@ namespace Stregsystemet
         private void DisplayActiveProducts()
         {
             Console.WriteLine("Input your username and a product ID (seperated by a space) to purchase a product.");
+
+            Console.WriteLine(new string('-', 84));
+            Console.WriteLine(string.Format("|{0, -10}|{1, -60}|{2, -10}|", "Id", "Name", "Price"));
+            Console.WriteLine(new string('-', 84));
             foreach (var item in Stregsystem.ActiveProducts)
             {
                 Console.WriteLine(item.ToString());
             }
+            Console.WriteLine(new string('-', 84));
+
         }
 
         public void Start()
         { 
             string command;
 
+            DisplayActiveProducts();
+
             while (true)
             {
-                DisplayActiveProducts();
                 command = Console.ReadLine();
                 OnCommandEntered(command);
             }

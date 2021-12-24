@@ -16,12 +16,19 @@ namespace Stregsystemet
         public IEnumerable<Product> ActiveProducts => _products.Where(p => p.Active == true);
 
         private int _transactionIdCounter = 1;
-        private IEnumerable<User> _users => GetUsersFromFile("users.csv");
-        private IEnumerable<Product> _products => GetProductsFromFile("products.csv");
+
+        private IEnumerable<User> _users;
+        private IEnumerable<Product> _products;
 
         private List<Transaction> _transactions = new List<Transaction>();
 
         public event UserBalanceNotification UserBalanceWarning;
+
+        public Stregsystem()
+        {
+            _users = GetUsersFromFile("users.csv");
+            _products = GetProductsFromFile("products.csv");
+        }
 
         public InsertCashTransaction AddCreditsToAccount(User user, int amount)
         {
@@ -39,9 +46,9 @@ namespace Stregsystemet
 
         public Product GetProductByID(int id)
         {
-            if (_products.Where(p => p.ID == id).Any())
+            if (_products.Any(p => p.ID == id))
             {
-                return _products.Where(p => p.ID == id).First();
+                return _products.First(p => p.ID == id);
             }
             else
             {
@@ -56,9 +63,9 @@ namespace Stregsystemet
 
         public User GetUserByUsername(string username)
         {
-            if (_users.Where(user => user.UserName == username).Any())
+            if (_users.Any(user => user.UserName == username))
             {
-                return _users.Where(user => user.UserName == username).First();
+                return _users.First(user => user.UserName == username);
             }
             else
             {

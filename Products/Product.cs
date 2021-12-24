@@ -27,8 +27,9 @@ namespace Stregsystemet
         public bool CanBeBoughtOnCredit { get; set; }
 
         public override string ToString()
-        {
-            return ID.ToString() + " - " + Name + " - " + Price.ToString() + " kr."; 
+        { 
+            //return ID.ToString() + " - " + Name + " - " + Price.ToString() + " kr."; 
+            return string.Format("|{0, -10}|{1, -60}|{2, 10}|", ID.ToString(), Name, Price.ToString() + " kr.");
         }
 
     }

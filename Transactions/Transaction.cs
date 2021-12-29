@@ -1,34 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Stregsystemet.Transactions
 {
-    public class Transaction
+    public abstract class Transaction
     {
-        public Transaction(int transactionId, User user, DateTime date, float amount)
+        public Transaction(int transactionId, User user, DateTime date, decimal price)
         {
             TransactionId = transactionId;
             User = user;
             Date = date;
-            Amount = amount;
-
-            Execute(user, Amount);
+            Price = price;
         }
 
         public int TransactionId{ get; }
         public User User{ get; }
         public DateTime Date { get; }
-        public float Amount { get; }
+        public decimal Price { get; }
 
         public override string ToString()
         {
-            return "Transaction: Id: " + TransactionId.ToString() + " | User:" + User.UserName + " | Amount: " + Amount.ToString() + " | Date/Time: " + Date.ToString();
+            return $"Transaction | Transaction Id: {TransactionId} | User: {User.UserName} | Price: {Price} | Date/Time: {Date}";
         }
 
-        public virtual void Execute(User user, float amount){}
+        public abstract string ToFileFormat();
+        public abstract void Execute();
 
     }
 }

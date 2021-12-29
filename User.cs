@@ -9,9 +9,9 @@ namespace Stregsystemet
     public class User : IComparable<User>
     {
 
-        public User(int id, string firstname, string lastname, string username, string email, float initialBalance = 0)
+        public User(int id, string firstname, string lastname, string username, string email, decimal initialBalance = 0)
         {
-            ID = id;
+            Id = id;
             FirstName = string.IsNullOrEmpty(firstname) ? throw new ArgumentNullException("String: First Name can't be null or empty") : firstname;
             LastName = string.IsNullOrEmpty(lastname) ? throw new ArgumentNullException("String: Last Name can't be null or empty") : lastname;
 
@@ -20,7 +20,7 @@ namespace Stregsystemet
             Balance = initialBalance;
         }
 
-        public int ID { get; }
+        public int Id { get; }
 
         public string FirstName { get; }
 
@@ -29,16 +29,16 @@ namespace Stregsystemet
 
         public string Email { get; }
 
-        public float Balance { get; set; }
+        public decimal Balance { get; set; }
 
         public int CompareTo(User user)
         {
-            return ID - user.ID;
+            return Id - user.Id;
         }
 
         public override string ToString()
         {
-            return "User: " + FirstName + " " + LastName + " " + $"({Email})" + " | Balance: " + Balance.ToString();
+            return $"User: {FirstName} {LastName} ({Email}) | Balance: {Balance}";
         }
 
         private bool ValidateUserName(string username)
@@ -98,23 +98,26 @@ namespace Stregsystemet
 
         public override bool Equals(object obj)
         {
-
             if (obj == null || GetType() != obj.GetType())
             {
                 return false;
             }
 
-            // TODO: write your implementation of Equals() here
-            throw new NotImplementedException();
-            return base.Equals(obj);
+            User user = (User)obj;
+
+            if (Id == user.Id)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         // override object.GetHashCode
         public override int GetHashCode()
         {
             // TODO: write your implementation of GetHashCode() here
-            throw new NotImplementedException();
-            return base.GetHashCode();
+            return HashCode.Combine(Id, UserName);
         }
 
     }

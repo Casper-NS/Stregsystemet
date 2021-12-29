@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Stregsystemet.Exceptions;
 
 namespace Stregsystemet
 {
@@ -13,19 +14,12 @@ namespace Stregsystemet
 
         public event StregsystemEvent CommandEntered;
 
-        protected virtual void OnCommandEntered(string command)
-        {
-            if (CommandEntered != null)
-            {
-                CommandEntered(command);
-            }
-        }
-
-        public IStregsystem Stregsystem { get; }
+        private IStregsystem Stregsystem { get; }
 
         public StregsystemCLI(IStregsystem stregsystem)
         {
             Stregsystem = stregsystem;
+            Stregsystem.UserBalanceWarning += BalanceWarning;
         }
 
         public void DisplayUserNotFound(string username)
@@ -35,12 +29,21 @@ namespace Stregsystemet
 
         public void DisplayProductNotFound(string product)
         {
-            Console.WriteLine($"Product [{product}] not found!");
+            Console.WriteLine($"Product id [{product}] not found!");
         }
 
         public void DisplayUserInfo(User user)
         {
             Console.WriteLine(user);
+            if (user.Balance <= 50)
+            {
+                BalanceWarning(user);
+            }
+            Console.WriteLine("Recent Transactions:");
+            foreach (var transaction in Stregsystem.GetTransactions(user, 10))
+            {
+                Console.WriteLine(transaction);
+            }
         }
 
         public void DisplayTooManyArgumentsError(string command)
@@ -60,7 +63,7 @@ namespace Stregsystemet
 
         public void DisplayUserBuysProduct(int count, BuyTransaction transaction)
         {
-            Console.WriteLine(count.ToString() + " * " + transaction);
+            Console.WriteLine($"{count} * {transaction}");
         }
 
         public void Close()
@@ -68,9 +71,10 @@ namespace Stregsystemet
             Environment.Exit(0);
         }
 
-        public void DisplayInsufficientCash(User user, Product product)
+        public void DisplayInsufficientCash(User user, Product product, int count = 1)
         {
-            Console.WriteLine($"User: [{user}] has insufficient funds to purchace [{product}]");
+            Console.WriteLine($"[{user}] has insufficient funds to purchace [{count}*{product.Name}]");
+            Console.WriteLine($"Current balance is {user.Balance}, price of purchase is {count*product.Price}");
         }
 
         public void DisplayGeneralError(string errorstring)
@@ -78,23 +82,30 @@ namespace Stregsystemet
             Console.WriteLine($"Error: {errorstring}");
         }
 
+        public void BalanceWarning(User user)
+        {
+            Console.WriteLine($"Your balance is low, current balance is {user.Balance}, consider adding more funds.");
+        }
+
         private void DisplayActiveProducts()
         {
-            Console.WriteLine("Input your username and a product ID (seperated by a space) to purchase a product.");
+            Console.Clear();
+            Console.WriteLine("Input your username and a product Id (seperated by a space) to purchase a product.");
+            Console.WriteLine("Multi buy is possible by writing ProductId:Number instead of just the product id.");
 
             Console.WriteLine(new string('-', 84));
-            Console.WriteLine(string.Format("|{0, -10}|{1, -60}|{2, -10}|", "Id", "Name", "Price"));
+            Console.WriteLine("|{0, -10}|{1, -60}|{2, -10}|", "Id", "Name", "Price");
             Console.WriteLine(new string('-', 84));
-            foreach (var item in Stregsystem.ActiveProducts)
+            foreach (var product in Stregsystem.ActiveProducts)
             {
-                Console.WriteLine(item.ToString());
+                Console.WriteLine(product.ToString());
             }
             Console.WriteLine(new string('-', 84));
 
         }
 
         public void Start()
-        { 
+        {
             string command;
 
             DisplayActiveProducts();
@@ -102,7 +113,8 @@ namespace Stregsystemet
             while (true)
             {
                 command = Console.ReadLine();
-                OnCommandEntered(command);
+                DisplayActiveProducts();
+                CommandEntered(command);
             }
         }
     }

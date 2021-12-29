@@ -6,12 +6,13 @@ using System.Threading.Tasks;
 
 namespace Stregsystemet.Exceptions
 {
-    class UserNotFoundException : Exception
+    public class UserNotFoundException : Exception
     {
         public UserNotFoundException(string username)
-            : base($"User [{username}] not found")
         {
-
+            UserName = username;
         }
+
+        public string UserName{ get; }
     }
 }

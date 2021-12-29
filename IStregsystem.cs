@@ -10,14 +10,13 @@ namespace Stregsystemet
     public interface IStregsystem
     {
         IEnumerable<Product> ActiveProducts { get; }
-        
-        InsertCashTransaction AddCreditsToAccount(User user, int amount);
+        InsertCashTransaction AddCreditsToAccount(User user, int price);
         BuyTransaction BuyProduct(User user, Product product);
         Product GetProductByID(int id);
         IEnumerable<Transaction> GetTransactions(User user, int count);
         IEnumerable<User> GetUsers(Func<User, bool> predicate);
         User GetUserByUsername(string username);
 
-        event UserBalanceNotification UserBalanceWarning;
+        event Stregsystem.UserBalanceNotification UserBalanceWarning;
     }
 }

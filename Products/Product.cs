@@ -9,9 +9,9 @@ namespace Stregsystemet
     public class Product
     {
 
-        public Product(int id, string name, int price, bool active = true, bool creditStatus = false)
+        public Product(int id, string name, decimal price, bool active = true, bool creditStatus = false)
         {
-            ID = id;
+            Id = id;
             Name = string.IsNullOrEmpty(name) ? throw new ArgumentException("string: Name can't be null or empty") : name;
             Price = price;
 
@@ -19,17 +19,16 @@ namespace Stregsystemet
             CanBeBoughtOnCredit = creditStatus;
         }
 
-        public int ID { get; }
-        public int Price { get; set; }
+        public int Id { get; }
+        public decimal Price { get; set; }
         public string Name { get; }
 
         public bool Active { get; set; }
         public bool CanBeBoughtOnCredit { get; set; }
 
         public override string ToString()
-        { 
-            //return ID.ToString() + " - " + Name + " - " + Price.ToString() + " kr."; 
-            return string.Format("|{0, -10}|{1, -60}|{2, 10}|", ID.ToString(), Name, Price.ToString() + " kr.");
+        {
+            return string.Format("|{0, -10}|{1, -60}|{2, 10}|", Id.ToString(), Name, Price + " kr.");
         }
 
     }

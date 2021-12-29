@@ -9,46 +9,69 @@ using System.Threading.Tasks;
 
 namespace Stregsystemet
 {
-    public delegate void UserBalanceNotification();
 
     public class Stregsystem : IStregsystem
     {
         public IEnumerable<Product> ActiveProducts => _products.Where(p => p.Active == true);
 
         private int _transactionIdCounter = 1;
+        private int _userIdCounter;
+        private int _productIdCounter;
 
-        private IEnumerable<User> _users;
-        private IEnumerable<Product> _products;
+        private readonly List<User> _users;
+        private readonly List<Product> _products;
 
-        private List<Transaction> _transactions = new List<Transaction>();
+        private readonly List<Transaction> _transactions = new List<Transaction>();
 
+        public delegate void UserBalanceNotification(User user);
+        
         public event UserBalanceNotification UserBalanceWarning;
 
         public Stregsystem()
         {
+            File.Create("transactions.csv").Close();
+            using (var writer = new StreamWriter($"../../../Data/transactions.csv"))
+            {
+                writer.WriteLine("transactiontype;transactionid;user;date;price;product");
+            }
             _users = GetUsersFromFile("users.csv");
             _products = GetProductsFromFile("products.csv");
+
+            if (_users.Count != 0)
+            {
+                _userIdCounter = _users.Last().Id + 1;
+            }
+
+            if (_products.Count != 0)
+            {
+                _productIdCounter = _products.Last().Id + 1;
+            }
+
         }
 
-        public InsertCashTransaction AddCreditsToAccount(User user, int amount)
+        public InsertCashTransaction AddCreditsToAccount(User user, int price)
         {
-            InsertCashTransaction transaction = new InsertCashTransaction(_transactionIdCounter++, user, DateTime.Now, amount);
-            _transactions.Add(transaction);
+            InsertCashTransaction transaction = new InsertCashTransaction(_transactionIdCounter, user, DateTime.Now, price);
+            ExecuteTransaction(transaction);
             return transaction;
         }
 
         public BuyTransaction BuyProduct(User user, Product product)
         {
-            BuyTransaction transaction = new BuyTransaction(_transactionIdCounter++, user, DateTime.Now, product.Price);
-            _transactions.Add(transaction);
+            BuyTransaction transaction = new BuyTransaction(_transactionIdCounter, user, DateTime.Now, product);
+            ExecuteTransaction(transaction);
+            if (user.Balance <= 50)
+            {
+                UserBalanceWarning(user);
+            }
             return transaction;
         }
 
         public Product GetProductByID(int id)
         {
-            if (_products.Any(p => p.ID == id))
+            if (_products.Any(p => p.Id == id))
             {
-                return _products.First(p => p.ID == id);
+                return _products.First(p => p.Id == id);
             }
             else
             {
@@ -58,7 +81,7 @@ namespace Stregsystemet
 
         public IEnumerable<Transaction> GetTransactions(User user, int count)
         {
-            return _transactions.Where(t => t.User == user).Take(count);
+            return _transactions.Where(t => t.User.Equals(user)).Reverse().Take(count);
         }
 
         public User GetUserByUsername(string username)
@@ -67,10 +90,7 @@ namespace Stregsystemet
             {
                 return _users.First(user => user.UserName == username);
             }
-            else
-            {
-                throw new UserNotFoundException(username);
-            }
+            throw new UserNotFoundException(username);
         }
 
         public IEnumerable<User> GetUsers(Func<User, bool> predicate)
@@ -94,8 +114,8 @@ namespace Stregsystemet
 
                     var id = int.Parse(values[0]);
                     var name = values[1];
-                    var price = int.Parse(values[2]);
-                    var active = values[3] == "1" ? true : false;
+                    var price = decimal.Parse(values[2])/100;
+                    var active = values[3] == "1";
 
                     foreach (string tag in tagsToRemove)
                     {
@@ -126,14 +146,40 @@ namespace Stregsystemet
                     var firstName = values[1];
                     var lastName = values[2];
                     var userName = values[3];
-                    var balance = float.Parse(values[4]);
+                    var balance = decimal.Parse(values[4])/100;
                     var email = values[5];
 
                     users.Add(new User(id, firstName, lastName, userName, email, balance));
-
                 }
             }
             return users;
         }
+
+
+        public User AddUser(string firstname, string lastname, string username, string email, decimal balance = 0)
+        {
+            User user = new User(_userIdCounter++, firstname, lastname, username, email, balance);
+            _users.Add(user);
+            return user;
+        }
+
+        public Product AddProduct(string name, decimal price, bool active = true, bool creditStatus = false)
+        {
+            Product product = new Product(_productIdCounter++, name, price, active, creditStatus);
+            _products.Add(product);
+            return product;
+        }
+
+        private void ExecuteTransaction(Transaction transaction)
+        {
+            transaction.Execute();
+            _transactionIdCounter++;
+            _transactions.Add(transaction);
+            using (var writer = File.AppendText($"../../../Data/transactions.csv"))
+            {
+                writer.WriteLine(transaction.ToFileFormat());
+            }
+        }
+
     }
 }
